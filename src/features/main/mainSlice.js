@@ -9,8 +9,8 @@ const song1 = {
     timeSig: { top: 4, bottom: 4 }
   },
   sections: [
-    { label: 'Verse', lines: ['line 1', 'line 2', 'line 3'] },
-    { label: 'Chorus', lines: ['line 1', 'line 2'] },
+    { label: 'Verse', content: 'content verse 1'},
+    { label: 'Chorus', content: 'content chorus 1'},
   ]
 }
 
@@ -23,7 +23,7 @@ const song2 = {
     timeSig: { top: 4, bottom: 4 }
   },
   sections: [
-    { label: 'Verse', lines: ['line 1', 'line 2', 'line 3'] },
+    { label: 'Verse', content: 'content verse 2'},
   ]
 }
 
@@ -36,10 +36,10 @@ const song3 = {
     timeSig: { top: 6, bottom: 8 }
   },
   sections: [
-    { label: 'Verse 1', lines: ['line 1', 'line 2', 'line 3'] },
-    { label: 'Chorus 1', lines: ['line 1', 'line 2'] },
-    { label: 'Verse 2', lines: ['line 1', 'line 2'] },
-    { label: 'Chorus 2', lines: ['line 1', 'line 2', 'line 3'] },
+    { label: 'Verse 1', content: 'content verse 3'},
+    { label: 'Chorus 1', content: 'content chorus 3'},
+    { label: 'Verse 2', content: 'content verse 3'},
+    { label: 'Chorus 2', content: 'content chorus 3'},
   ]
 }
 
@@ -49,8 +49,7 @@ const initialState = {
 };
 
 
-const getSelectedSong = (songs, selectedSong) => songs.find((song) => {
-  console.log(song.id + ' ' + selectedSong);
+const getSelectedSong = (songs, selectedSong) => songs.find(song => {
   return song.id === selectedSong;
 });
 
@@ -72,12 +71,22 @@ export const mainSlice = createSlice({
       getSelectedSong(state.songs, state.selectedSong).meta = action.payload;
     },
     addSongSection: (state, action) => {
-      getSelectedSong(state.songs, state.selectedSong).sections.push(action.payload);
-    }
+      var section = {
+        label: 'New Section',
+        content: '',
+      }
+      getSelectedSong(state.songs, state.selectedSong).sections.push(section);
+    },
+    editSectionLabel: (state, action) => {
+      getSelectedSong(state.songs, state.selectedSong).sections[action.payload.i].label = action.payload.label;
+    },
+    editSectionContent: (state, action) => {
+      getSelectedSong(state.songs, state.selectedSong).sections[action.payload.i].content = action.payload.content;
+    },
   },
 });
 
-export const { createNewSong, selectSong, editSongTitle, editSongMeta, addSongSection } = mainSlice.actions;
+export const { createNewSong, selectSong, editSongTitle, editSongMeta, addSongSection, editSectionLabel, editSectionContent } = mainSlice.actions;
 
 export const selectSongs = (state) => state.main.songs;
 // export const selectSongNames = (state) => state.main.songs.map((song) => {id, title});
