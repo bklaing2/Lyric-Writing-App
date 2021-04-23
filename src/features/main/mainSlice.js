@@ -58,24 +58,48 @@ export const mainSlice = createSlice({
   initialState,
   
   reducers: {
-    createNewSong: (state, action) => {
-      state.songs.push(action.payload);
+    // Song functions
+    createSong: (state, action) => {
+      const song = {
+        id: Date.now(),
+        title: 'New Song',
+        meta: {
+          tempo: 120,
+          keySig: 'C',
+          timeSig: { top: 4, bottom: 4 }
+        },
+        sections: []
+      }
+
+      state.songs.push(song);
+      state.selectedSong = state.songs[state.songs.length - 1].id
+    },
+    deleteSong: (state, action) => {
+      var index = state.songs.map(song => { return song.id }).indexOf(action.payload)
+      state.songs.splice(index, 1);
     },
     selectSong: (state, action) => {
       state.selectedSong = action.payload;
     },
+
+    // Song parameter functions
     editSongTitle: (state, action) => {
       getSelectedSong(state.songs, state.selectedSong).title = action.payload;
     },
     editSongMeta: (state, action) => {
       getSelectedSong(state.songs, state.selectedSong).meta = action.payload;
     },
-    addSongSection: (state, action) => {
+
+    // Song section functions
+    addSection: (state, action) => {
       var section = {
         label: 'New Section',
         content: '',
       }
       getSelectedSong(state.songs, state.selectedSong).sections.push(section);
+    },
+    deleteSection: (state, action) => {
+      getSelectedSong(state.songs, state.selectedSong).sections.splice(action.payload, 1)
     },
     editSectionLabel: (state, action) => {
       getSelectedSong(state.songs, state.selectedSong).sections[action.payload.i].label = action.payload.label;
@@ -86,10 +110,22 @@ export const mainSlice = createSlice({
   },
 });
 
-export const { createNewSong, selectSong, editSongTitle, editSongMeta, addSongSection, editSectionLabel, editSectionContent } = mainSlice.actions;
+export const {
+  createSong,
+  deleteSong,
+  selectSong,
+  
+  editSongTitle,
+  editSongMeta,
+  
+  addSection,
+  deleteSection,
+  editSectionLabel,
+  editSectionContent,
+} = mainSlice.actions;
 
-export const selectSongs = (state) => state.main.songs;
-// export const selectSongNames = (state) => state.main.songs.map((song) => {id, title});
-export const selectSelectedSong = (state) => getSelectedSong(state.main.songs, state.main.selectedSong);
+export const selectSongs = state => state.main.songs;
+export const selectSongNames = state => state.main.songs.map(song => { return { id: song.id, title: song.title }});
+export const selectSelectedSong = state => getSelectedSong(state.main.songs, state.main.selectedSong);
 
 export default mainSlice.reducer;

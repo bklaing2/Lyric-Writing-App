@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   editSongTitle,
   editSongMeta,
-  addSongSection,
+
+  addSection,
+  deleteSection,
   editSectionLabel,
   editSectionContent,
+
   selectSelectedSong,
 } from '../mainSlice';
 import styles from './Editor.module.css';
@@ -13,38 +16,38 @@ import styles from './Editor.module.css';
 export function Editor() {
   const song = useSelector(selectSelectedSong);
 
-  const [incrementAmount, setIncrementAmount] = useState('2');
-
   const dispatch = useDispatch();
 
 
+  // Button functions
   const editTitle = () => {
-    var title = prompt('Title', song.title);
-    dispatch(editSongTitle(title));
+    dispatch(editSongTitle(prompt('Title', song.title)));
   }
 
   const editMeta = () => {
-    var tempo = prompt('Tempo', song.meta.tempo);
-    var keySig = prompt('Key Signature', song.meta.keySig);
-    var timeSigTop = prompt('Time Signature Top', song.meta.timeSig.top);
-    var timeSigBottom = prompt('Time Signature Bottom', song.meta.timeSig.bottom);
-
-    tempo = (tempo == null || tempo == '') ? song.meta.tempo : tempo;
-    keySig = (keySig == null || keySig == '') ? song.meta.keySig : keySig;
-    timeSigTop = (timeSigTop == null || timeSigTop == '') ? song.meta.timeSig.top : timeSigTop;
-    timeSigBottom = (timeSigBottom == null || timeSigBottom == '') ? song.meta.timeSig.bottom : timeSigBottom;
-
-    var newMeta = {
-      tempo: tempo,
-      keySig: keySig,
-      timeSig: { top: timeSigTop, bottom: timeSigBottom }
+    var meta = {
+      tempo: prompt('Tempo', song.meta.tempo),
+      keySig: prompt('Key Signature', song.meta.keySig),
+      timeSig: {
+        top: prompt('Time Signature Top', song.meta.timeSig.top),
+        bottom: prompt('Time Signature Bottom', song.meta.timeSig.bottom)
+      },
     };
 
-    dispatch(editSongMeta(newMeta));
+    dispatch(editSongMeta(meta));
   };
 
 
-  const updateSectionContent = (content, i) => {
+  const newSection = () => dispatch(addSection());
+  const removeSection = i => dispatch(deleteSection(i))
+
+
+  const editLabel = (label, i) => {
+    dispatch(editSectionLabel({ label: prompt('Section Name', label), i: i } ))
+  }
+
+
+  const editContent = (content, i) => {
     dispatch(editSectionContent( { content: content, i: i } ))
   }
 
@@ -53,13 +56,16 @@ export function Editor() {
   // Other elements
   const sections = song.sections.map((section, i) =>
     <li>
-      <label for={`section_${i}`} onClick={() => dispatch(editSectionLabel({ label: prompt('Tempo', section.label), i: i } ))}>{section.label}</label>
+      <label for={`section_${i}`} onClick={() => editLabel(section.label, i)}>{section.label}</label>
+      <button onClick={() => removeSection(i)}>-</button>
+      <br />
+
       <textarea id={`section_${i}`}
         name={section.label}
         rows="4" cols="50"
         value={section.content}
         // onBlur={e => updateSectionContent(e.target.value, i)}
-        onChange={e => updateSectionContent(e.target.value, i)} />
+        onChange={e => editContent(e.target.value, i)} />
     </li>
   );
   
@@ -79,7 +85,7 @@ export function Editor() {
         {sections}
       </ul>
 
-      <p onClick={() => dispatch(addSongSection())}>+</p>
+      <button onClick={newSection}>+</button>
     </section>
   );
 }

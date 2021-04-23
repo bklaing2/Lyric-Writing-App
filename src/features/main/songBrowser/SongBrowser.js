@@ -1,27 +1,16 @@
-import React, { useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import { SongList } from './songList/SongList';
 import {
-  createNewSong,
+  createSong,
 } from '../mainSlice';
 import styles from './SongBrowser.module.css';
 
-const song = {
-  id: Date.now(),
-  title: 'test',
-  meta: {
-    tempo: 120,
-    keySig: 'C',
-    timeSig: { top: 4, bottom: 4 }
-  },
-  sections: [
-    // { label: 'Verse', lines: ['line 1', 'line 2', 'line 3'] },
-    // { label: 'Chorus', lines: ['line 1', 'line 2'] },
-  ]
-}
 
 export function SongBrowser() {
   const dispatch = useDispatch();
+
+  const newSong = () => dispatch(createSong());
 
   return (
     <section className={styles.container}>
@@ -29,7 +18,7 @@ export function SongBrowser() {
       <div className={styles.header}>
         <h2>
           Song Browser
-          <button onClick={() => dispatch(createNewSong(song))}>+</button>
+          <button onClick={newSong}>+</button>
         </h2>
       </div>
 
