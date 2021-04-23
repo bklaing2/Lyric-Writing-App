@@ -4,6 +4,8 @@ import {
   editSongTitle,
   editSongMeta,
   addSongSection,
+  editSectionLabel,
+  editSectionContent,
   selectSelectedSong,
 } from '../mainSlice';
 import styles from './Editor.module.css';
@@ -11,27 +13,15 @@ import styles from './Editor.module.css';
 export function Editor() {
   const song = useSelector(selectSelectedSong);
 
-  console.log(song);
+  const [incrementAmount, setIncrementAmount] = useState('2');
 
-  const lines = (lines) => lines.map((line) => 
-    <li>{line}</li>
-  );
-  const sections = song.sections.map((section) =>
-    <li>
-      <h3>{section.label}</h3>
-      
-      <ul>{lines(section.lines)}</ul>
-    </li>
-  );
   const dispatch = useDispatch();
-  // const [incrementAmount, setIncrementAmount] = useState('2');
 
-  // const incrementValue = Number(incrementAmount) || 0;
 
   const editTitle = () => {
     var title = prompt('Title', song.title);
     dispatch(editSongTitle(title));
-  ;}
+  }
 
   const editMeta = () => {
     var tempo = prompt('Tempo', song.meta.tempo);
@@ -53,6 +43,28 @@ export function Editor() {
     dispatch(editSongMeta(newMeta));
   };
 
+
+  const updateSectionContent = (content, i) => {
+    dispatch(editSectionContent( { content: content, i: i } ))
+  }
+
+
+
+  // Other elements
+  const sections = song.sections.map((section, i) =>
+    <li>
+      <label for={`section_${i}`} onClick={() => dispatch(editSectionLabel({ label: prompt('Tempo', section.label), i: i } ))}>{section.label}</label>
+      <textarea id={`section_${i}`}
+        name={section.label}
+        rows="4" cols="50"
+        value={section.content}
+        // onBlur={e => updateSectionContent(e.target.value, i)}
+        onChange={e => updateSectionContent(e.target.value, i)} />
+    </li>
+  );
+  
+
+  // Main elements
   return (
     <section className={styles.container}>
       <h2 onClick={editTitle}>
@@ -63,9 +75,11 @@ export function Editor() {
         {song.meta.tempo} {song.meta.keySig} {song.meta.timeSig.top}/{song.meta.timeSig.bottom}
       </div>
 
-      <ul className={styles.sections} onClick={() => dispatch(addSongSection({label: 'test', lines: []}))}>
+      <ul className={styles.sections}>
         {sections}
       </ul>
+
+      <p onClick={() => dispatch(addSongSection())}>+</p>
     </section>
   );
 }
