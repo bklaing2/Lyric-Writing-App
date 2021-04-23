@@ -31,7 +31,7 @@ export function Editor() {
   const editTitle = () => {
     var title = prompt('Title', song.title);
     dispatch(editSongTitle(title));
-  ;}
+  }
 
   const editMeta = () => {
     var tempo = prompt('Tempo', song.meta.tempo);
