@@ -1,13 +1,13 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { Section } from './section/Section.js'
+
 import {
   editSongTitle,
   editSongMeta,
 
   addSection,
-  deleteSection,
-  editSectionLabel,
-  editSectionContent,
 
   selectSelectedSong,
 } from '../mainSlice';
@@ -39,34 +39,11 @@ export function Editor() {
 
 
   const newSection = () => dispatch(addSection());
-  const removeSection = i => dispatch(deleteSection(i))
-
-
-  const editLabel = (label, i) => {
-    dispatch(editSectionLabel({ label: prompt('Section Name', label), i: i } ))
-  }
-
-
-  const editContent = (content, i) => {
-    dispatch(editSectionContent( { content: content, i: i } ))
-  }
-
 
 
   // Other elements
   const sections = song.sections.map((section, i) =>
-    <li>
-      <label for={`section_${i}`} onClick={() => editLabel(section.label, i)}>{section.label}</label>
-      <button onClick={() => removeSection(i)}>-</button>
-      <br />
-
-      <textarea id={`section_${i}`}
-        name={section.label}
-        rows="4" cols="50"
-        value={section.content}
-        // onBlur={e => updateSectionContent(e.target.value, i)}
-        onChange={e => editContent(e.target.value, i)} />
-    </li>
+    <Section key={i} section={section} i={i} />
   );
   
 
