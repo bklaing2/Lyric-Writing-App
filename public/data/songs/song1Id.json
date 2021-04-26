@@ -1,0 +1,13 @@
+{
+  "id": "song1Id",
+  "title": "song1",
+  "meta": {
+    "tempo": 120,
+    "keySig": "C",
+    "timeSig": { "top": 4, "bottom": 4 }
+  },
+  "sections": [
+    { "label": "Verse", "content": "content verse 1"},
+    { "label": "Chorus", "content": "content chorus 1"}
+  ]
+}

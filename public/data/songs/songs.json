@@ -1,0 +1,7 @@
+{
+  "songs": [
+    { "id": "song1Id", "title": "song1" },
+    { "id": "song2Id", "title": "song2" },
+    { "id": "song3Id", "title": "song3" }
+  ]
+}

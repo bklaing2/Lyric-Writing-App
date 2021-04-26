@@ -1,4 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+const DATA_PATH = 'data/songs';
+const OPTIONS = {
+  headers: { 
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+};
 
 const song1 = {
   id: 'song1Id',
@@ -44,14 +52,27 @@ const song3 = {
 }
 
 const initialState = {
-  songs: [song1, song2, song3],
-  selectedSong: song1.id,
+  songs: [song1],//, song2, song3],
+  openSong: song1.id,
 };
 
 
-const getSelectedSong = (songs, selectedSong) => songs.find(song => {
+const getSong = (songs, selectedSong) => songs.find(song => {
   return song.id === selectedSong;
 });
+
+
+
+
+
+export const loadSongs = createAsyncThunk(
+  'main/loadSongs',
+  async () => {
+    return fetch(`${DATA_PATH}/songs.json`, OPTIONS)
+      .then(songs => { return songs.json(); })
+  }
+);
+
 
 export const mainSlice = createSlice({
   name: 'main',
@@ -72,22 +93,20 @@ export const mainSlice = createSlice({
       }
 
       state.songs.push(song);
-      state.selectedSong = state.songs[state.songs.length - 1].id
+      state.openSong = state.songs[state.songs.length - 1].id
     },
     deleteSong: (state, action) => {
       var index = state.songs.map(song => { return song.id }).indexOf(action.payload)
       state.songs.splice(index, 1);
     },
-    selectSong: (state, action) => {
-      state.selectedSong = action.payload;
-    },
+    setOpenSong: (state, action) => { state.openSong = action.payload; },
 
     // Song parameter functions
     editSongTitle: (state, action) => {
-      getSelectedSong(state.songs, state.selectedSong).title = action.payload;
+      getSong(state.songs, state.openSong).title = action.payload;
     },
     editSongMeta: (state, action) => {
-      getSelectedSong(state.songs, state.selectedSong).meta = action.payload;
+      getSong(state.songs, state.openSong).meta = action.payload;
     },
 
     // Song section functions
@@ -96,24 +115,35 @@ export const mainSlice = createSlice({
         label: 'New Section',
         content: '',
       }
-      getSelectedSong(state.songs, state.selectedSong).sections.push(section);
+      getSong(state.songs, state.openSong).sections.push(section);
     },
     deleteSection: (state, action) => {
-      getSelectedSong(state.songs, state.selectedSong).sections.splice(action.payload, 1)
+      getSong(state.songs, state.openSong).sections.splice(action.payload, 1)
     },
     editSectionLabel: (state, action) => {
-      getSelectedSong(state.songs, state.selectedSong).sections[action.payload.i].label = action.payload.label;
+      getSong(state.songs, state.openSong).sections[action.payload.i].label = action.payload.label;
     },
     editSectionContent: (state, action) => {
-      getSelectedSong(state.songs, state.selectedSong).sections[action.payload.i].content = action.payload.content;
+      getSong(state.songs, state.openSong).sections[action.payload.i].content = action.payload.content;
     },
   },
+  // Extra reducers
+  extraReducers: builder => {
+    builder
+      .addCase(loadSongs.pending, state => {
+        console.log('Pending');
+      })
+      .addCase(loadSongs.fulfilled, (state, action) => {
+        console.log(action.payload.songs);
+        state.songs = action.payload.songs;
+      });
+  }
 });
 
 export const {
   createSong,
   deleteSong,
-  selectSong,
+  setOpenSong,
   
   editSongTitle,
   editSongMeta,
@@ -124,8 +154,13 @@ export const {
   editSectionContent,
 } = mainSlice.actions;
 
-export const selectSongs = state => state.main.songs;
-export const selectSongNames = state => state.main.songs.map(song => { return { id: song.id, title: song.title }});
-export const selectSelectedSong = state => getSelectedSong(state.main.songs, state.main.selectedSong);
+
+// Selectors
+export const selectOpenSongId = state => state.main.openSong;
+export const selectOpenSong = state => getSong(state.main.songs, state.main.openSong);
+
+export const selectSongNames = state => state.main.songs;
+
+
 
 export default mainSlice.reducer;

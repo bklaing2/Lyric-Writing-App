@@ -4,14 +4,16 @@ import {
   deleteSection,
   editSectionLabel,
   editSectionContent,
-} from '../../mainSlice';
+} from '../editorSlice';
+
 import styles from './Section.module.css';
 
-export function Section(props) {
+
+export default function Section(props) {
   const section = props.section;
   const i = props.i;
 
-  const [content, setContent] = useState(section.content)
+  const [content, setContent] = useState(section.content);
 
   const dispatch = useDispatch();
 
@@ -31,7 +33,7 @@ export function Section(props) {
   // Main elements
   return (
     <li>
-      <label for={`section_${i}`} onClick={editLabel}>{section.label}</label>
+      <label htmlFor={`section_${i}`} onClick={editLabel}>{section.label}</label>
       <button onClick={removeSection}>-</button>
       <br />
 

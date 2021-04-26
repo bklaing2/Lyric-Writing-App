@@ -1,30 +1,32 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-
-import { Section } from './section/Section.js'
-
 import {
-  editSongTitle,
-  editSongMeta,
+  editTitle,
+  editMeta,
 
   addSection,
 
-  selectSelectedSong,
-} from '../mainSlice';
+  selectSong,
+} from './editorSlice';
+
 import styles from './Editor.module.css';
 
-export function Editor() {
-  const song = useSelector(selectSelectedSong);
+import Section from './section/Section.js';
+
+
+
+export default function Editor() {
+  const song = useSelector(selectSong);
 
   const dispatch = useDispatch();
 
 
   // Button functions
-  const editTitle = () => {
-    dispatch(editSongTitle(prompt('Title', song.title)));
+  const onTitleClick = () => {
+    dispatch(editTitle(prompt('Title', song.title)));
   }
 
-  const editMeta = () => {
+  const onMetaClick = () => {
     var meta = {
       tempo: prompt('Tempo', song.meta.tempo),
       keySig: prompt('Key Signature', song.meta.keySig),
@@ -34,27 +36,26 @@ export function Editor() {
       },
     };
 
-    dispatch(editSongMeta(meta));
+    dispatch(editMeta(meta));
   };
-
 
   const newSection = () => dispatch(addSection());
 
 
   // Other elements
   const sections = song.sections.map((section, i) =>
-    <Section key={i} section={section} i={i} />
+    <Section key={`${song.id}_${i}`} section={section} i={i} />
   );
   
 
   // Main elements
   return (
     <section className={styles.container}>
-      <h2 onClick={editTitle}>
+      <h2 onClick={onTitleClick}>
         {song.title}
       </h2>
 
-      <div className={styles.meta} onClick={editMeta}>
+      <div className={styles.meta} onClick={onMetaClick}>
         {song.meta.tempo} {song.meta.keySig} {song.meta.timeSig.top}/{song.meta.timeSig.bottom}
       </div>
 

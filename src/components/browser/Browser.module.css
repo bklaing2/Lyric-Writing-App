@@ -16,6 +16,13 @@
   background-color: gray;
 }
 
+ul {
+  flex: 0 1 auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
 .row {
   display: flex;
   align-items: center;

@@ -1,0 +1,15 @@
+{
+  "id": "song3Id",
+  "title": "song3",
+  "meta": {
+    "tempo": 80,
+    "keySig": "B#",
+    "timeSig": { "top": 6, "bottom": 8 }
+  },
+  "sections": [
+    { "label": "Verse 1", "content": "content verse 3"},
+    { "label": "Chorus 1", "content": "content chorus 3"},
+    { "label": "Verse 2", "content": "content verse 3"},
+    { "label": "Chorus 2", "content": "content chorus 3"}
+  ]
+}

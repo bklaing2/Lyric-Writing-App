@@ -1,0 +1,12 @@
+{
+  "id": "song2Id",
+  "title": "song2",
+  "meta": {
+    "tempo": 155,
+    "keySig": "C#",
+    "timeSig": { "top": 4, "bottom": 4 }
+  },
+  "sections": [
+    { "label": "Verse", "content": "content verse 2"}
+  ]
+}
