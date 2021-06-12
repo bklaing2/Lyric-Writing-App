@@ -4,7 +4,7 @@ import {
   deleteSection,
   editSectionLabel,
   editSectionContent,
-} from '../editorSlice';
+} from '../../../../state/songSlice';
 
 import styles from './Section.module.css';
 

@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import TutorialDataService from "../../../services/test.service";
 
 const DATA_PATH = 'data/songs/songs.json';
 const OPTIONS = {
@@ -45,10 +46,20 @@ export const saveSong = createAsyncThunk(
 export const loadSong = createAsyncThunk(
   'editor/loadSong',
   async song => {
-    return fetch(`${DATA_PATH}/${song}.json`, OPTIONS)
-      .then(songs => { return songs.json(); })
+    const res = await TutorialDataService.getAll();
+    return res.data;
   }
 );
+
+
+// Load from file
+// export const loadSong = createAsyncThunk(
+//   'editor/loadSong',
+//   async song => {
+//     return fetch(`${DATA_PATH}/${song}.json`, OPTIONS)
+//       .then(songs => { return songs.json(); })
+//   }
+// );
 
 
 export const editorSlice = createSlice({
@@ -99,7 +110,8 @@ export const editorSlice = createSlice({
       })
       .addCase(loadSong.fulfilled, (state, action) => {
         console.log('Fulfilled LOAD');
-        state.song = action.payload;
+        console.log(action.payload);
+        // state.song = action.payload;
       });
   }
 });

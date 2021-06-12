@@ -3,13 +3,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   loadSongs,
 
-  selectOpenSong,
-  selectSongs,
+  loadSong,
+  // saveSong,
 
   createSong,
   setOpenSong,
-} from './browserSlice';
-import { saveSong, loadSong } from '../editor/editorSlice';
+
+  selectOpenSong,
+  selectSongs,
+} from '../../../state/songSlice';
 
 import styles from './Browser.module.css';
 
@@ -31,7 +33,7 @@ export default function Browser() {
   const newSong = () => dispatch(createSong());
 
   const onSongClick = song => {
-    // dispatch(saveSong(openSong));
+    // dispatch(saveSong());
     dispatch(setOpenSong(song));
     dispatch(loadSong(song));
   }
@@ -40,9 +42,9 @@ export default function Browser() {
   // Other elements
   const songList = songs.map((song, i) =>
     <Song
-      key={song.id}
-      selected={song.id === openSong}
-      onClick={() => onSongClick(song.id)}>
+      key={song._id}
+      selected={song._id === openSong}
+      onClick={() => onSongClick(song._id)}>
 
       {song.title}
     </Song>

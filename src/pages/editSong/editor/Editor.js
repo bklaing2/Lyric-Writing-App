@@ -1,13 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+  updateTitle,
+
   editTitle,
   editMeta,
 
   addSection,
 
   selectSong,
-} from './editorSlice';
+} from '../../../state/songSlice';
 
 import styles from './Editor.module.css';
 
@@ -17,13 +19,16 @@ import Section from './section/Section.js';
 
 export default function Editor() {
   const song = useSelector(selectSong);
+  console.log(song);
 
   const dispatch = useDispatch();
 
 
   // Button functions
   const onTitleClick = () => {
-    dispatch(editTitle(prompt('Title', song.title)));
+    let newTitle = prompt('Title', song.title)
+    // dispatch(editTitle(newTitle));
+    dispatch(updateTitle({title: newTitle, id: song._id}));
   }
 
   const onMetaClick = () => {
