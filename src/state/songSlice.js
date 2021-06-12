@@ -30,20 +30,23 @@ export const loadSong = createAsyncThunk(
   }
 );
 
-export const updateTitle = createAsyncThunk(
-  'song/updateTitle',
-  async data => {
-    console.log(data.title);
-    console.log(data.id);
-    const res = await songDataService.updateTitle(data.id, data.title);
+
+export const updateSong = createAsyncThunk(
+  'song/updateSong',
+  async ({id, type, data}) => {
+    console.log(`UPDATE SONG::\tid:${id},\ttype:${type},\tdata:${data}`);
+    const res = await songDataService.updateSong(id, type, data);
     return res.data;
   }
 );
 
-export const updateMeta = createAsyncThunk(
-  'song/updateMeta',
-  async (meta, id) => {
-    const res = await songDataService.updateMeta(meta);
+
+export const addSection = createAsyncThunk(
+  'song/addSection',
+  async id => {
+    var data = {label: 'New Section', content: 'TEMP'};
+    console.log(`ADD SECTION::\tid:${id},\tdata:${data}`);
+    const res = await songDataService.addSongSection(id, data);
     return res.data;
   }
 );
@@ -87,21 +90,15 @@ export const songSlice = createSlice({
     setOpenSong: (state, action) => { state.openSong = action.payload; },
 
     // Song parameter functions
-    editTitle: (state, action) => {
-      state.song.title = action.payload;
-    },
-    editMeta: (state, action) => {
-      state.song.meta = action.payload;
-    },
 
     // Song section functions
-    addSection: (state, action) => {
-      var section = {
-        label: 'New Section',
-        content: '',
-      }
-      state.song.sections.push(section);
-    },
+    // addSection: (state, action) => {
+    //   var section = {
+    //     label: 'New Section',
+    //     content: '',
+    //   }
+    //   state.song.sections.push(section);
+    // },
     deleteSection: (state, action) => {
       state.song.sections.splice(action.payload, 1)
     },
@@ -124,22 +121,25 @@ export const songSlice = createSlice({
         state.song = action.payload;
       })
 
-      .addCase(updateTitle.pending, state => {
-        console.log('UPDATE TITLE: pending');
+      .addCase(updateSong.pending, state => {
+        console.log('UPDATE SONG: pending');
       })
-      .addCase(updateTitle.fulfilled, (state, action) => {
-        console.log('UPDATE TITLE: fulfilled');
-        
-        state.song.title = action.payload.title;
-        var song = state.songs.find(song => { return song._id === action.payload.id });
-        song.title = action.payload.title;
+      .addCase(updateSong.fulfilled, (state, action) => {
+        console.log('UPDATE SONG: fulfilled');
+        state.song[action.payload.type] = action.payload.data;
+
+        if (action.payload.type === 'title') {
+          var song = state.songs.find(song => { return song._id === action.payload.id });
+          song.title = action.payload.data;
+        }
       })
 
-      .addCase(updateMeta.pending, state => {
-        console.log('UPDATE META: pending');
+      .addCase(addSection.pending, state => {
+        console.log('ADD SECTION: pending');
       })
-      .addCase(updateMeta.fulfilled, (state, action) => {
-        console.log('UPDATE META: fulfilled');
+      .addCase(addSection.fulfilled, (state, action) => {
+        console.log('ADD SECTION: fulfilled');
+        state.song.sections.push(action.payload.data);
       })
       
       .addCase(loadSongs.pending, state => {
@@ -177,7 +177,7 @@ export const {
   editTitle,
   editMeta,
   
-  addSection,
+  // addSection,
   deleteSection,
   editSectionLabel,
   editSectionContent,

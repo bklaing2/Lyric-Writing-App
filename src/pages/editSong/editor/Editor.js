@@ -1,10 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  updateTitle,
-
-  editTitle,
-  editMeta,
+  updateSong,
 
   addSection,
 
@@ -23,12 +20,18 @@ export default function Editor() {
 
   const dispatch = useDispatch();
 
+  const update = (type, data) => {
+    dispatch(updateSong({
+      id: song._id,
+      type: type,
+      data: data
+    }))
+  }
+
 
   // Button functions
   const onTitleClick = () => {
-    let newTitle = prompt('Title', song.title)
-    // dispatch(editTitle(newTitle));
-    dispatch(updateTitle({title: newTitle, id: song._id}));
+    update('title', prompt('Title', song.title));
   }
 
   const onMetaClick = () => {
@@ -41,10 +44,10 @@ export default function Editor() {
       },
     };
 
-    dispatch(editMeta(meta));
+    update('meta', meta);
   };
 
-  const newSection = () => dispatch(addSection());
+  const newSection = () => dispatch(addSection(song._id));
 
 
   // Other elements

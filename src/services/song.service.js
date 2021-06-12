@@ -14,12 +14,25 @@ class songDataService {
   }
 
 
-  updateTitle(id, title) {;
+  updateSong(id, type, data) {
+    return http.patch(`/song/${id}/update/${type}`, {data: data})
+  }
+
+  addSongSection(id, data) {
+    return http.patch(`/song/${id}/update/section/add`, {data: data})
+  }
+
+  updateSongSection(id, i, type, data) {
+    return http.patch(`/song/${id}/update/section/${i}/${type}`, {data: data})
+  }
+
+
+  updateTitle(id, title) {
     return http.patch('/song/' + id + '/updateTitle', {title: title})
   }
 
-  updateMeta(meta) {
-    return http.patch('/updateMeta', meta)
+  updateMeta(id, meta) {
+    return http.patch('/song/' + id + '/updateMeta', {meta: meta})
   }
 
 

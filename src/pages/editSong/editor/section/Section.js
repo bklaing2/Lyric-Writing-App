@@ -26,6 +26,7 @@ export default function Section(props) {
   }
 
   const editContent = () => {
+    console.log('Exited section');
     dispatch(editSectionContent( { content: content, i: i } ))
   }
   
