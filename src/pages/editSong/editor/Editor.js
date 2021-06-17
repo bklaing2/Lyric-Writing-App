@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   updateSong,
+  deleteSong,
 
   addSection,
 
@@ -30,6 +31,10 @@ export default function Editor() {
 
 
   // Button functions
+  const onDeleteSongClick = () => {
+    dispatch(deleteSong(song._id));
+  }
+
   const onTitleClick = () => {
     update('title', prompt('Title', song.title));
   }
@@ -52,7 +57,7 @@ export default function Editor() {
 
   // Other elements
   const sections = song.sections.map((section, i) =>
-    <Section key={`${song.id}_${i}`} section={section} i={i} />
+    <Section key={`${song._id}_${i}`} section={section} i={i} song={song._id} />
   );
   
 
@@ -62,6 +67,8 @@ export default function Editor() {
       <h2 onClick={onTitleClick}>
         {song.title}
       </h2>
+
+      <button onClick={onDeleteSongClick}>-</button>
 
       <div className={styles.meta} onClick={onMetaClick}>
         {song.meta.tempo} {song.meta.keySig} {song.meta.timeSig.top}/{song.meta.timeSig.bottom}

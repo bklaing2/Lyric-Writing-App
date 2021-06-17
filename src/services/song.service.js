@@ -13,6 +13,10 @@ class songDataService {
     return http.post('/createSong', song);
   }
 
+  deleteSong(id) {
+    return http.delete(`/deleteSong/${id}`);
+  }
+
 
   updateSong(id, type, data) {
     return http.patch(`/song/${id}/update/${type}`, {data: data})
@@ -20,6 +24,10 @@ class songDataService {
 
   addSongSection(id, data) {
     return http.patch(`/song/${id}/update/section/add`, {data: data})
+  }
+
+  deleteSongSection(id, i) {
+    return http.patch(`/song/${id}/update/section/delete/${i}`, {i: i})
   }
 
   updateSongSection(id, i, type, data) {
